@@ -12,6 +12,6 @@ local Tab = Window:MakeTab({
 Tab:AddButton({
 	Name = "20-20-20 Dropkick",
 	Callback = function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/JuanchoCriticas/Nothing/main/thingy"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/JuanchoCriticas/Nothing/main/Thingy2"))()
   	end    
 })
