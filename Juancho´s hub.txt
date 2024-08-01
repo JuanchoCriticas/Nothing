@@ -1,0 +1,17 @@
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
+
+local Window = OrionLib:MakeWindow({Name = "Juancho Scripts - Dropkick TSB", HidePremium = false, SaveConfig = true, ConfigFolder = "dxl_bf"})
+
+local Tab = Window:MakeTab({
+	Name = "Scripts",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
+
+
+Tab:AddButton({
+	Name = "20-20-20 Dropkick",
+	Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/JuanchoCriticas/Nothing/main/thingy"))()
+  	end    
+})
