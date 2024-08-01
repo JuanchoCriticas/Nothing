@@ -1,0 +1,119 @@
+local p = game.Players.LocalPlayer
+local TS = game:GetService("TweenService")
+local RunService = game:GetService("RunService")
+
+local FinalDamage = 75
+local sped = 150
+local candash = true
+local hit = 0
+local Character = p.Character
+local Humanoid = Character:WaitForChild("Humanoid")
+local RootPart = Character:WaitForChild("HumanoidRootPart")
+local move = Instance.new("BodyVelocity", RootPart)
+move.MaxForce = Vector3.new(math.huge, 0, math.huge)
+
+local hitbox = Instance.new("Part")
+hitbox.CanCollide = false
+hitbox.Anchored = false
+hitbox.Name = "Hitbox"
+hitbox.Material = Enum.Material.ForceField
+hitbox.Size = Vector3.new(8, 8, 10)
+hitbox.CanQuery = false
+hitbox.Transparency = 1
+hitbox.Color = Color3.fromRGB(255, 0, 0)
+hitbox.Massless = true
+hitbox.Parent = workspace
+
+function getRoot(char)
+	local rootPart = char:FindFirstChild('HumanoidRootPart') or char:FindFirstChild('Torso') or char:FindFirstChild('UpperTorso')
+	return rootPart
+end
+
+local hitlist = {}
+
+local AnimAnim = Instance.new("Animation")
+AnimAnim.AnimationId = "rbxassetid://17354976067"
+local Anim = Humanoid:LoadAnimation(AnimAnim)
+AnimAnim.AnimationId = "rbxassetid://0"
+Anim:Play()
+
+Humanoid.WalkSpeed = 0
+
+Anim:GetMarkerReachedSignal("StartHitbox"):Connect(function()
+	move.Velocity = sped * RootPart.CFrame.LookVector
+	move.Parent = RootPart
+	hitbox.CFrame = RootPart.CFrame * CFrame.new(0, 0, -9)
+
+	local function onHeartbeat()
+		if candash then
+			move.Velocity = sped * RootPart.CFrame.LookVector
+			hitbox.CFrame = RootPart.CFrame * CFrame.new(0, 0, -9)
+		end
+	end
+
+	local heartbeatConnection
+	heartbeatConnection = RunService.Heartbeat:Connect(onHeartbeat)
+
+	hitbox.Touched:Connect(function(hitPart)
+		local hitHumanoid = hitPart.Parent:FindFirstChildOfClass("Humanoid")
+		if hitHumanoid and hitPart.Parent ~= Character and hit == 0 then
+			if not hitlist[hitHumanoid] then
+				hitlist[hitHumanoid] = true
+				candash = false
+				hit = 1
+
+				local speaker = p
+				speaker.Character:FindFirstChildOfClass('Humanoid').AutoRotate  = false
+				heartbeatConnection:Disconnect()
+				move:Destroy()
+				hitbox:Destroy()
+				Anim:Stop()
+
+				if speaker.Character:FindFirstChildOfClass('Humanoid') and speaker.Character:FindFirstChildOfClass('Humanoid').SeatPart then
+					speaker.Character:FindFirstChildOfClass('Humanoid').Sit = false
+					task.wait(.1)
+				end
+				getRoot(speaker.Character).CFrame = getRoot(hitPart.Parent).CFrame + Vector3.new(-10,1,0)
+
+				local BeenASecond, V3 = false, Vector3.new(0, 0, 0)
+				delay(1, function()
+					BeenASecond = true
+				end)
+				while not BeenASecond do
+					for _, v in ipairs(speaker.Character:GetDescendants()) do
+						if v:IsA("BasePart") then
+							v.Velocity, v.RotVelocity = V3, V3
+						end
+					end
+					task.wait()
+				end
+
+				local PlayerAnim = Instance.new("Animation")
+				PlayerAnim.AnimationId = "rbxassetid://17420452843"
+				local Player = Humanoid:LoadAnimation(PlayerAnim)
+				PlayerAnim.AnimationId = "rbxassetid://0"
+				Player:Play()
+
+				local VictimAnim = Instance.new("Animation")
+				VictimAnim.AnimationId = "rbxassetid://17363256069"
+				local Victim = hitHumanoid:LoadAnimation(VictimAnim)
+				VictimAnim.AnimationId = "rbxassetid://0"
+				Victim:Play()
+
+				wait(2)
+				speaker.Character:FindFirstChildOfClass('Humanoid').AutoRotate  = true
+				Humanoid.WalkSpeed = 16
+				candash = true
+				hitlist[hitHumanoid] = nil
+				hit = 0
+			end
+		end
+	end)
+end)
+
+Anim:GetMarkerReachedSignal("End"):Connect(function()
+	move:Destroy()
+	candash = false
+	hitbox:Destroy()
+	Humanoid.WalkSpeed = 16
+end)
